@@ -3,12 +3,19 @@
 public interface IIdentityService
 {
     string? GetId();
+    T? GetId<T>();
+    string? Get(string claimName);
+    string? GetName();
+    string? GetEmail();
+    string? GetRoleId();
+    T? GetRoleId<T>();
+    string? GetLangueId();
+    T? GetLangueId<T>();
     string? GetLangueCode();
-    Guid GetLangueId();
-    string? GetNom();
-    string? GetProprietaireId();
-    Guid GetRoleId();
-    bool GetRoleIsInterne();
-    string? GetTenantId();
-    bool HasDroit(string droitCode);
+    IEnumerable<string> GetTenantsId();
+    IEnumerable<T> GetTenantsId<T>();
+    T GetUniqueTenantId<T>();
+    bool HasTenantsId(string tenantId);
+    IEnumerable<string> GetPermissions();
+    bool HasPermissions(string permission);
 }

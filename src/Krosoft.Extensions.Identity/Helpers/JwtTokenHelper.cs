@@ -2,7 +2,7 @@
 using Krosoft.Extensions.Core.Models;
 using Krosoft.Extensions.Core.Models.Exceptions;
 
-namespace Krosoft.Extensions.Identity;
+namespace Krosoft.Extensions.Identity.Helpers;
 
 public static class JwtTokenHelper
 {
