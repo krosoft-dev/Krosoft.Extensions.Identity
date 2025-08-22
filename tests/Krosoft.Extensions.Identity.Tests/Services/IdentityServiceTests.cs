@@ -254,6 +254,41 @@ public class IdentityServiceTests : BaseTest
     }
 
     [TestMethod]
+    public void GetUniqueTenantId_Ko_Multiple()
+    {
+        Check.ThatCode(() => _identityService.GetUniqueTenantId())
+             .Throws<KrosoftTechnicalException>()
+             .WithMessage("Plusieurs TenantId trouvés.");
+    }
+
+    [TestMethod]
+    public void GetUniqueTenantId_Ko_()
+    {
+        var claims = new Dictionary<string, List<string>>
+        {
+            { KrosoftClaimNames.TenantsId, [] }
+        };
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+
+        Check.ThatCode(() => _identityService.GetUniqueTenantId())
+             .Throws<KrosoftTechnicalException>()
+             .WithMessage("Aucun TenantId trouvé.");
+    }
+
+    [TestMethod]
+    public void GetUniqueTenantId()
+    {
+        var claims = new Dictionary<string, List<string>>
+        {
+            { KrosoftClaimNames.TenantsId, [ClaimValueTenantId1.ToString()] }
+        };
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+        Check.That(_identityService.GetUniqueTenantId()).IsEqualTo(ClaimValueTenantId1.ToString());
+    }
+
+    [TestMethod]
     public void HasTenantsId_True()
     {
         Check.That(_identityService.HasTenantsId("a")).IsTrue();

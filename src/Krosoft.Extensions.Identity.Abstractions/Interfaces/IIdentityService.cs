@@ -14,7 +14,8 @@ public interface IIdentityService
     string? GetLangueCode();
     IEnumerable<string> GetTenantsId();
     IEnumerable<T> GetTenantsId<T>();
-    T GetUniqueTenantId<T>();
+    string? GetUniqueTenantId();
+    T? GetUniqueTenantId<T>();
     bool HasTenantsId(string tenantId);
     IEnumerable<string> GetPermissions();
     bool HasPermissions(string permission);

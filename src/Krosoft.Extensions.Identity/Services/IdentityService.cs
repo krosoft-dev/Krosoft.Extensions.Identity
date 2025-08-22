@@ -29,15 +29,7 @@ public class IdentityService : IIdentityService
 
     public IEnumerable<T> GetTenantsId<T>() => GetTenantsId().Select(ToType<T>).ToList()!;
 
-    public bool HasTenantsId(string tenantId) => GetTenantsId().Contains(tenantId);
-
-    public IEnumerable<string> GetPermissions()
-        => _claimsService.CheckClaims(KrosoftClaimNames.Permissions, claim => claim, false) ?? [];
-
-    public IEnumerable<string> GetTenantsId()
-        => _claimsService.CheckClaims(KrosoftClaimNames.TenantsId, claim => claim, false) ?? [];
-
-    public T GetUniqueTenantId<T>()
+    public string? GetUniqueTenantId()
     {
         var tenantsId = GetTenantsId().ToList();
         if (!tenantsId.Any())
@@ -50,10 +42,21 @@ public class IdentityService : IIdentityService
             throw new KrosoftTechnicalException("Plusieurs TenantId trouvés.");
         }
 
-        var tenantId = tenantsId.Single();
+        var tenantId = tenantsId.SingleOrDefault();
 
-        return ToType<T>(tenantId)!;
+        return tenantId;
     }
+
+    public bool HasTenantsId(string tenantId) => GetTenantsId().Contains(tenantId);
+
+    public IEnumerable<string> GetPermissions()
+        => _claimsService.CheckClaims(KrosoftClaimNames.Permissions, claim => claim, false) ?? [];
+
+    public IEnumerable<string> GetTenantsId()
+        => _claimsService.CheckClaims(KrosoftClaimNames.TenantsId, claim => claim, false) ?? [];
+
+    public T? GetUniqueTenantId<T>() =>
+        ToType<T>(GetUniqueTenantId());
 
     public bool HasPermissions(string permission) => GetPermissions().Contains(permission);
 
