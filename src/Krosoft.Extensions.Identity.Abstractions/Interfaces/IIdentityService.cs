@@ -4,6 +4,7 @@ public interface IIdentityService
 {
     string? GetId();
     T? GetId<T>();
+    string? Get(string claimName);
     string? GetName();
     string? GetEmail();
     string? GetRoleId();

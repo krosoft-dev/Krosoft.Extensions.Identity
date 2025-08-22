@@ -13,79 +13,45 @@ public class IdentityService : IIdentityService
         _claimsService = claimsService;
     }
 
-    public string? GetId() => _claimsService.CheckClaim<string>(KrosoftClaimNames.Id);
+    public string? GetId() => _claimsService.CheckClaim(KrosoftClaimNames.Id);
 
     public T? GetId<T>() => ToType<T>(GetId());
-    public string GetName() => throw new NotImplementedException();
+    public string? Get(string claimName) => _claimsService.CheckClaim(claimName);
+    public string? GetName() => _claimsService.CheckClaim(KrosoftClaimNames.Name);
+    public string? GetEmail() => _claimsService.CheckClaim(KrosoftClaimNames.Email);
+    public string? GetRoleId() => _claimsService.CheckClaim(KrosoftClaimNames.RoleId);
+    public string? GetLangueId() => _claimsService.CheckClaim(KrosoftClaimNames.LangueId);
+    public string? GetLangueCode() => _claimsService.CheckClaim(KrosoftClaimNames.LangueCode);
 
-    public string GetEmail() => throw new NotImplementedException();
+    public IEnumerable<T> GetTenantsId<T>() => GetTenantsId().Select(ToType<T>).ToList()!;
 
-    public string GetRoleId() => throw new NotImplementedException();
+    public bool HasTenantsId(string tenantId) => GetTenantsId().Contains(tenantId);
 
-    public string GetLangueId() => throw new NotImplementedException();
+    public IEnumerable<string> GetPermissions()
+        => _claimsService.CheckClaims(KrosoftClaimNames.Permissions, claim => claim, false) ?? [];
 
-    public string GetLangueCode() => throw new NotImplementedException();
+    public IEnumerable<string> GetTenantsId()
+        => _claimsService.CheckClaims(KrosoftClaimNames.TenantsId, claim => claim, false) ?? [];
 
-    public IEnumerable<string> GetTenantsId() => throw new NotImplementedException();
+    public T GetUniqueTenantId<T>()
+    {
+        var tenantsId = GetTenantsId().ToList();
+        if (!tenantsId.Any())
+        {
+            throw new KrosoftTechnicalException("Aucun TenantId trouvé.");
+        }
 
-    public IEnumerable<T> GetTenantsId<T>() => throw new NotImplementedException();
+        if (tenantsId.Count > 1)
+        {
+            throw new KrosoftTechnicalException("Plusieurs TenantId trouvés.");
+        }
 
-    public T GetUniqueTenantId<T>() => throw new NotImplementedException();
+        var tenantId = tenantsId.Single();
 
-    public bool HasTenantsId(string tenantId) => throw new NotImplementedException();
+        return ToType<T>(tenantId)!;
+    }
 
-    public IEnumerable<string> GetPermissions() => throw new NotImplementedException();
-
-    public bool HasPermissions(string permission) => throw new NotImplementedException();
-
-    //public string? GetName() => _claimsService.CheckClaim<string>(KrosoftClaimNames.Name);
-
-    //public string? GetRoleId() => throw new NotImplementedException();
-
-    //string? IIdentityService.GetLangueId() => throw new NotImplementedException();
-
-    //public string? GetLangueCode()
-    //{
-    //    return _claimsService.CheckClaim(KrosoftClaimNames.LangueCode, claim => claim, true);
-    //}
-
-    //public IEnumerable<string> GetTenantsId()
-    //{
-    //    return _claimsService.CheckClaims(KrosoftClaimNames.TenantsId, claim => claim, false) ?? [];
-    //}
-
-    //public IEnumerable<T> GetTenantsId<T>() => GetTenantsId().Select(ToType<T>).ToList()!;
-
-    //public T GetUniqueTenantId<T>()
-    //{
-    //    var tenantsId = GetTenantsId().ToList();
-    //    if (!tenantsId.Any())
-    //    {
-    //        throw new KrosoftTechnicalException("Aucun TenantId trouvé.");
-    //    }
-
-    //    if (tenantsId.Count > 1)
-    //    {
-    //        throw new KrosoftTechnicalException("Plusieurs TenantId trouvés.");
-    //    }
-
-    //    var tenantId = tenantsId.Single();
-
-    //    return ToType<T>(tenantId);
-    //}
-
-    //public bool HasTenantsId(string tenantId) => GetTenantsId().Contains(tenantId);
-
-    //public IEnumerable<string> GetPermissions() => throw new NotImplementedException();
-
-    //public bool HasPermissions(string permission) => GetPermissions().Contains(permission);
-
-    //public Guid GetLangueId() => _claimsService.CheckClaim(KrosoftClaimNames.LangueId, claim => new Guid(claim), true);
-
-    //public Guid GetRoleId()
-    //{
-    //    return _claimsService.CheckClaim(KrosoftClaimNames.RoleId, claim => new Guid(claim), true);
-    //}
+    public bool HasPermissions(string permission) => GetPermissions().Contains(permission);
 
     private static T? ToType<T>(string? tenantId)
     {

@@ -6,9 +6,10 @@ public class FakeIdentityService : IIdentityService
 {
     public string GetId() => throw new NotImplementedException();
     public T GetId<T>() => throw new NotImplementedException();
+    public string Get(string claimName) => throw new NotImplementedException();
 
-    public string GetName() => throw new NotImplementedException();
-    public string GetEmail() => throw new NotImplementedException();
+    public string? GetName() => throw new NotImplementedException();
+    public string? GetEmail() => throw new NotImplementedException();
 
     string IIdentityService.GetRoleId() => throw new NotImplementedException();
 
