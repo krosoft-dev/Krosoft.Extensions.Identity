@@ -17,16 +17,24 @@ public class KrosoftTokenBuilderService : IKrosoftTokenBuilderService
         var krosoftToken = new KrosoftToken
         {
             Id = _identityService.GetId(),
-            TenantId = _identityService.GetTenantId(),
-            Nom = _identityService.GetNom(),
-            Email = null,
-            ProprietaireId = _identityService.GetProprietaireId(),
-            RoleId = _identityService.GetRoleId().ToString(),
-            RoleIsInterne = _identityService.GetRoleIsInterne(),
-            RoleHomePage = null,
-            LangueId = _identityService.GetLangueId().ToString(),
+            Name = _identityService.GetName(),
+            Email = _identityService.GetEmail(),
+            RoleId = _identityService.GetRoleId(),
+            LangueId = _identityService.GetLangueId(),
             LangueCode = _identityService.GetLangueCode()
         };
+
+        var tenantsId = _identityService.GetTenantsId().ToHashSet();
+        foreach (var tenantId in tenantsId)
+        {
+            krosoftToken.TenantsId.Add(tenantId);
+        }
+
+        var permissions = _identityService.GetPermissions().ToHashSet();
+        foreach (var permission in permissions)
+        {
+            krosoftToken.Permissions.Add(permission);
+        }
 
         return krosoftToken;
     }

@@ -35,7 +35,7 @@ public class KrosoftTokenBuilderServiceTests : BaseTest
 
         Check.That(result).IsNotNull();
         Check.That(result.Id).IsEqualTo(null);
-        Check.That(result.TenantId).IsEqualTo(null);
+        //Check.That(result.TenantId).IsEqualTo(null);
     }
 
     [TestMethod]
@@ -45,7 +45,7 @@ public class KrosoftTokenBuilderServiceTests : BaseTest
         {
             var mockUserProvider = new Mock<IIdentityService>();
             mockUserProvider.Setup(userProvider => userProvider.GetId()).Returns(1.ToGuid().ToString());
-            mockUserProvider.Setup(userProvider => userProvider.GetTenantId()).Returns("test");
+            //mockUserProvider.Setup(userProvider => userProvider.GetTenantId()).Returns("test");
             services.SwapTransient(_ => mockUserProvider.Object);
         }
 
@@ -56,6 +56,6 @@ public class KrosoftTokenBuilderServiceTests : BaseTest
 
         Check.That(result).IsNotNull();
         Check.That(result.Id).IsEqualTo("00000000-0000-0000-0000-000000000001");
-        Check.That(result.TenantId).IsEqualTo("test"); 
+        //Check.That(result.TenantId).IsEqualTo("test"); 
     }
 }

@@ -15,7 +15,7 @@ namespace Krosoft.Extensions.Identity.Tests.Services;
 [TestSubject(typeof(IdentityService))]
 public class IdentityServiceTests : BaseTest
 {
-    private const string ProprietaireId = "test";
+    private const string ClaimValueName = "Luke";
 
     //TestInitialize
     private IIdentityService _identityService = null!;
@@ -28,28 +28,18 @@ public class IdentityServiceTests : BaseTest
     }
 
     [TestMethod]
-    public void GetProprietaireIdTest()
+    public void GetName()
     {
-        var proprietaireId = _identityService.GetProprietaireId();
-
-        Check.That(proprietaireId).IsEqualTo(ProprietaireId);
-    }
-
-    [TestMethod]
-    public void GetRoleIsInterneTest()
-    {
-        var roleIsInterne = _identityService.GetRoleIsInterne();
-
-        Check.That(roleIsInterne).IsTrue();
+        Check.That(_identityService.GetName()).IsEqualTo(ClaimValueName);
     }
 
     private static void MockClaims(IServiceCollection services)
     {
         var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new[]
         {
-            new Claim(KrosoftClaimNames.Id, new Guid().ToString()),
-            new Claim(KrosoftClaimNames.ProprietaireId, ProprietaireId),
-            new Claim(KrosoftClaimNames.RoleIsInterne, true.ToString())
+            new Claim(KrosoftClaimNames.Id, Guid.CreateVersion7().ToString()),
+            new Claim(KrosoftClaimNames.Name, ClaimValueName)
+            //new Claim(KrosoftClaimNames.RoleIsInterne, true.ToString())
         }));
 
         var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();

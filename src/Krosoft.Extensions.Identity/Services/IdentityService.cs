@@ -1,4 +1,5 @@
-﻿using Krosoft.Extensions.Identity.Abstractions.Constantes;
+﻿using Krosoft.Extensions.Core.Models.Exceptions;
+using Krosoft.Extensions.Identity.Abstractions.Constantes;
 using Krosoft.Extensions.Identity.Abstractions.Interfaces;
 
 namespace Krosoft.Extensions.Identity.Services;
@@ -12,52 +13,111 @@ public class IdentityService : IIdentityService
         _claimsService = claimsService;
     }
 
-    public string? GetId()
-    {
-        return _claimsService.CheckClaim(KrosoftClaimNames.Id, claim => claim, true);
-    }
+    public string? GetId() => _claimsService.CheckClaim<string>(KrosoftClaimNames.Id);
 
-    public string? GetLangueCode()
-    {
-        return _claimsService.CheckClaim(KrosoftClaimNames.LangueCode, claim => claim, true);
-    }
+    public T? GetId<T>() => ToType<T>(GetId());
+    public string GetName() => throw new NotImplementedException();
 
-    public Guid GetLangueId()
-    {
-        return _claimsService.CheckClaim(KrosoftClaimNames.LangueId, claim => new Guid(claim), true);
-    }
+    public string GetEmail() => throw new NotImplementedException();
 
-    public string? GetNom()
-    {
-        return _claimsService.CheckClaim(KrosoftClaimNames.Nom, claim => claim, true);
-    }
+    public string GetRoleId() => throw new NotImplementedException();
 
-    public string? GetProprietaireId()
-    {
-        return _claimsService.CheckClaim(KrosoftClaimNames.ProprietaireId, claim => claim, false);
-    }
+    public string GetLangueId() => throw new NotImplementedException();
 
-    public Guid GetRoleId()
-    {
-        return _claimsService.CheckClaim(KrosoftClaimNames.RoleId, claim => new Guid(claim), true);
-    }
+    public string GetLangueCode() => throw new NotImplementedException();
 
-    public bool GetRoleIsInterne()
+    public IEnumerable<string> GetTenantsId() => throw new NotImplementedException();
+
+    public IEnumerable<T> GetTenantsId<T>() => throw new NotImplementedException();
+
+    public T GetUniqueTenantId<T>() => throw new NotImplementedException();
+
+    public bool HasTenantsId(string tenantId) => throw new NotImplementedException();
+
+    public IEnumerable<string> GetPermissions() => throw new NotImplementedException();
+
+    public bool HasPermissions(string permission) => throw new NotImplementedException();
+
+    //public string? GetName() => _claimsService.CheckClaim<string>(KrosoftClaimNames.Name);
+
+    //public string? GetRoleId() => throw new NotImplementedException();
+
+    //string? IIdentityService.GetLangueId() => throw new NotImplementedException();
+
+    //public string? GetLangueCode()
+    //{
+    //    return _claimsService.CheckClaim(KrosoftClaimNames.LangueCode, claim => claim, true);
+    //}
+
+    //public IEnumerable<string> GetTenantsId()
+    //{
+    //    return _claimsService.CheckClaims(KrosoftClaimNames.TenantsId, claim => claim, false) ?? [];
+    //}
+
+    //public IEnumerable<T> GetTenantsId<T>() => GetTenantsId().Select(ToType<T>).ToList()!;
+
+    //public T GetUniqueTenantId<T>()
+    //{
+    //    var tenantsId = GetTenantsId().ToList();
+    //    if (!tenantsId.Any())
+    //    {
+    //        throw new KrosoftTechnicalException("Aucun TenantId trouvé.");
+    //    }
+
+    //    if (tenantsId.Count > 1)
+    //    {
+    //        throw new KrosoftTechnicalException("Plusieurs TenantId trouvés.");
+    //    }
+
+    //    var tenantId = tenantsId.Single();
+
+    //    return ToType<T>(tenantId);
+    //}
+
+    //public bool HasTenantsId(string tenantId) => GetTenantsId().Contains(tenantId);
+
+    //public IEnumerable<string> GetPermissions() => throw new NotImplementedException();
+
+    //public bool HasPermissions(string permission) => GetPermissions().Contains(permission);
+
+    //public Guid GetLangueId() => _claimsService.CheckClaim(KrosoftClaimNames.LangueId, claim => new Guid(claim), true);
+
+    //public Guid GetRoleId()
+    //{
+    //    return _claimsService.CheckClaim(KrosoftClaimNames.RoleId, claim => new Guid(claim), true);
+    //}
+
+    private static T? ToType<T>(string? tenantId)
     {
-        return _claimsService.CheckClaim(KrosoftClaimNames.RoleIsInterne, claim =>
+        if (typeof(T) == typeof(Guid))
         {
-            bool.TryParse(claim, out var r);
-            return r;
-        }, false);
-    }
+            if (Guid.TryParse(tenantId, out var guidResult))
+            {
+                return (T?)(object?)guidResult;
+            }
+        }
 
-    public string? GetTenantId()
-    {
-        return _claimsService.CheckClaim(KrosoftClaimNames.TenantId, claim => claim, false);
-    }
+        if (typeof(T) == typeof(string))
+        {
+            return (T?)(object?)tenantId;
+        }
 
-    public bool HasDroit(string droitCode)
-    {
-        return _claimsService.CheckClaims(KrosoftClaimNames.Droits, droitsCode => droitsCode.Contains(droitCode));
+        if (typeof(T) == typeof(int))
+        {
+            if (int.TryParse(tenantId, out var intResult))
+            {
+                return (T?)(object?)intResult;
+            }
+        }
+
+        if (typeof(T) == typeof(long))
+        {
+            if (long.TryParse(tenantId, out var longResult))
+            {
+                return (T?)(object?)longResult;
+            }
+        }
+
+        throw new KrosoftTechnicalException($"Impossible de convertir le TenantId '{tenantId}' en {typeof(T)}.");
     }
 }
