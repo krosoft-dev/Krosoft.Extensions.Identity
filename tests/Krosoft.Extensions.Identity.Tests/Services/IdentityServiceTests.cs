@@ -189,13 +189,21 @@ public class IdentityServiceTests : BaseTest
         Check.That(_identityService.GetTenantsId<Guid>()).ContainsExactly(ClaimValueTenantId1);
     }
 
+    [TestMethod]
+    public void GetPermissions_EmptyNoClaim()
+    {
+        var claims = new Dictionary<string, List<string>>();
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+        Check.That(_identityService.GetPermissions()).IsEmpty();
+    }
 
     [TestMethod]
     public void GetPermissions_Empty()
     {
         var claims = new Dictionary<string, List<string>>
         {
-             
+            { KrosoftClaimNames.Permissions, [] }
         };
         using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
         _identityService = serviceProvider.GetRequiredService<IIdentityService>();
