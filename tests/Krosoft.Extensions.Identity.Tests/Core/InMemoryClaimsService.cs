@@ -27,7 +27,7 @@ public class InMemoryClaimsService : IClaimsService
         throw new KrosoftTechnicalException($"Le claim '{claimName}' n'existe pas.");
     }
 
-    public string? CheckClaim(string claimName) => CheckClaim<string>(claimName, (x) =>x, true);
+    public string? CheckClaim(string claimName) => CheckClaim<string>(claimName, x => x, true);
 
     public T? CheckClaims<T>(string claimName, Func<IEnumerable<string>, T?> funcSuccess, bool isRequired)
     {
