@@ -8,12 +8,14 @@ public class FakeIdentityService : IIdentityService
     public T GetId<T>() => throw new NotImplementedException();
     public string Get(string claimName) => throw new NotImplementedException();
 
-    public string? GetName() => throw new NotImplementedException();
-    public string? GetEmail() => throw new NotImplementedException();
+    public string GetName() => throw new NotImplementedException();
+    public string GetEmail() => throw new NotImplementedException();
 
     string IIdentityService.GetRoleId() => throw new NotImplementedException();
+    public T GetRoleId<T>() => throw new NotImplementedException();
 
     string IIdentityService.GetLangueId() => throw new NotImplementedException();
+    public T GetLangueId<T>() => throw new NotImplementedException();
 
     public string GetLangueCode() => throw new NotImplementedException();
 

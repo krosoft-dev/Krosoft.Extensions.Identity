@@ -20,7 +20,11 @@ public class IdentityService : IIdentityService
     public string? GetName() => _claimsService.CheckClaim(KrosoftClaimNames.Name);
     public string? GetEmail() => _claimsService.CheckClaim(KrosoftClaimNames.Email);
     public string? GetRoleId() => _claimsService.CheckClaim(KrosoftClaimNames.RoleId);
+    public T? GetRoleId<T>() => ToType<T>(GetRoleId());
+
     public string? GetLangueId() => _claimsService.CheckClaim(KrosoftClaimNames.LangueId);
+    public T? GetLangueId<T>() => ToType<T>(GetLangueId());
+
     public string? GetLangueCode() => _claimsService.CheckClaim(KrosoftClaimNames.LangueCode);
 
     public IEnumerable<T> GetTenantsId<T>() => GetTenantsId().Select(ToType<T>).ToList()!;

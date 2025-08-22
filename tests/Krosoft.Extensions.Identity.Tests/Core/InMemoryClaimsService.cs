@@ -24,7 +24,7 @@ public class InMemoryClaimsService : IClaimsService
             return default;
         }
 
-        throw new KrosoftTechnicalException($"Le claim {claimName} n'existe pas.");
+        throw new KrosoftTechnicalException($"Le claim '{claimName}' n'existe pas.");
     }
 
     public string? CheckClaim(string claimName) => CheckClaim<string>(claimName, (x) =>x, true);
@@ -41,6 +41,6 @@ public class InMemoryClaimsService : IClaimsService
             return default;
         }
 
-        throw new KrosoftTechnicalException($"Le claim {claimName} n'existe pas.");
+        throw new KrosoftTechnicalException($"Le claim '{claimName}' n'existe pas.");
     }
 }

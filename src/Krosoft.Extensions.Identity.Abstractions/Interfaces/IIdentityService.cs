@@ -8,7 +8,9 @@ public interface IIdentityService
     string? GetName();
     string? GetEmail();
     string? GetRoleId();
+    T? GetRoleId<T>();
     string? GetLangueId();
+    T? GetLangueId<T>();
     string? GetLangueCode();
     IEnumerable<string> GetTenantsId();
     IEnumerable<T> GetTenantsId<T>();

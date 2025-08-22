@@ -23,6 +23,7 @@ public class IdentityServiceTests : BaseTest
     private static readonly IEnumerable<string> ClaimValueTenantsId = ["a", "b"];
     private static readonly IEnumerable<string> ClaimValuePermissions = ["read", "write"];
     private static readonly Guid ClaimValueId = new Guid("f247e235-318f-4b0c-8220-6a23669db3f5");
+    private static readonly Guid ClaimValueTenantId1 = new Guid("0bc52175-7774-4f0b-833e-ae89a12d24e4");
 
     //TestInitialize
     private IIdentityService _identityService = null!;
@@ -49,20 +50,7 @@ public class IdentityServiceTests : BaseTest
     [TestMethod]
     public void Get_Ok()
     {
-
         Check.That(_identityService.Get(KrosoftClaimNames.Name)).IsEqualTo(ClaimValueName);
-    }
-
-
-    [TestMethod]
-    public void Get_NoClaims()
-    {
-        var claims = new Dictionary<string, List<string>>();
-        using (var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); }))
-        {
-            _identityService = serviceProvider.GetRequiredService<IIdentityService>();
-            Check.That(_identityService.Get(KrosoftClaimNames.Name)).IsEqualTo(ClaimValueName);
-        }
     }
 
     [TestMethod]
@@ -70,7 +58,7 @@ public class IdentityServiceTests : BaseTest
     {
         Check.ThatCode(() => _identityService.Get("KrosoftClaimNames"))
              .Throws<KrosoftTechnicalException>()
-             .WithMessage("Le claim KrosoftClaimNames n'existe pas.");
+             .WithMessage("Le claim 'KrosoftClaimNames' n'existe pas.");
     }
 
     [TestMethod]
@@ -83,6 +71,74 @@ public class IdentityServiceTests : BaseTest
     public void GetId_Generic()
     {
         Check.That(_identityService.GetId<Guid>()).IsEqualTo(ClaimValueId);
+    }
+
+    [TestMethod]
+    public void GetLangueId_Generic_Ko()
+    {
+        Check.ThatCode(() => _identityService.GetLangueId<long>())
+             .Throws<KrosoftTechnicalException>()
+             .WithMessage("Impossible de convertir le TenantId 'fr' en System.Int64.");
+    }
+
+    [TestMethod]
+    public void GetLangueId_Generic()
+    {
+        var claims = new Dictionary<string, List<string>>
+        {
+            { KrosoftClaimNames.LangueId, [42.ToString()] }
+        };
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+        Check.That(_identityService.GetLangueId<long>()).IsEqualTo(42);
+    }
+
+    [TestMethod]
+    public void GetRoleId_Generic_Ko()
+    {
+        Check.ThatCode(() => _identityService.GetRoleId<Guid>())
+             .Throws<KrosoftTechnicalException>()
+             .WithMessage("Impossible de convertir le TenantId 'some-id' en System.Guid.");
+    }
+
+    [TestMethod]
+    public void GetRoleId_Generic_Ko_Int()
+    {
+        Check.ThatCode(() => _identityService.GetRoleId<int>())
+             .Throws<KrosoftTechnicalException>()
+             .WithMessage("Impossible de convertir le TenantId 'some-id' en System.Int32.");
+    }
+
+    [TestMethod]
+    public void GetRoleId_Generic_Ko_Long()
+    {
+        Check.ThatCode(() => _identityService.GetRoleId<long>())
+             .Throws<KrosoftTechnicalException>()
+             .WithMessage("Impossible de convertir le TenantId 'some-id' en System.Int64.");
+    }
+
+    [TestMethod]
+    public void GetRoleId_Generic()
+    {
+        var claims = new Dictionary<string, List<string>>
+        {
+            { KrosoftClaimNames.RoleId, [24.ToString()] }
+        };
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+        Check.That(_identityService.GetRoleId<int>()).IsEqualTo(24);
+    }
+
+    [TestMethod]
+    public void GetRoleId_Generic_String()
+    {
+        var claims = new Dictionary<string, List<string>>
+        {
+            { KrosoftClaimNames.RoleId, [24.ToString()] }
+        };
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+        Check.That(_identityService.GetRoleId<string>()).IsEqualTo("24");
     }
 
     [TestMethod]
@@ -124,13 +180,69 @@ public class IdentityServiceTests : BaseTest
     [TestMethod]
     public void GetTenantsId_Generic()
     {
-        Check.That(_identityService.GetTenantsId<Guid>()).ContainsExactly(ClaimValueTenantsId);
+        var claims = new Dictionary<string, List<string>>
+        {
+            { KrosoftClaimNames.TenantsId, [ClaimValueTenantId1.ToString()] }
+        };
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+        Check.That(_identityService.GetTenantsId<Guid>()).ContainsExactly(ClaimValueTenantId1);
+    }
+
+
+    [TestMethod]
+    public void GetPermissions_Empty()
+    {
+        var claims = new Dictionary<string, List<string>>
+        {
+             
+        };
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+        Check.That(_identityService.GetPermissions()).IsEmpty();
+    }
+
+    [TestMethod]
+    public void GetTenantsId_Generic_Ko()
+    {
+        Check.ThatCode(() => _identityService.GetTenantsId<Guid>())
+             .Throws<KrosoftTechnicalException>()
+             .WithMessage("Impossible de convertir le TenantId 'a' en System.Guid.");
+    }
+
+    [TestMethod]
+    public void GetUniqueTenantId_Generic_Ko_Multiple()
+    {
+        Check.ThatCode(() => _identityService.GetUniqueTenantId<Guid>())
+             .Throws<KrosoftTechnicalException>()
+             .WithMessage("Plusieurs TenantId trouvés.");
+    }
+
+    [TestMethod]
+    public void GetUniqueTenantId_Generic_Ko_()
+    {
+        var claims = new Dictionary<string, List<string>>
+        {
+            { KrosoftClaimNames.TenantsId, [] }
+        };
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+
+        Check.ThatCode(() => _identityService.GetUniqueTenantId<Guid>())
+             .Throws<KrosoftTechnicalException>()
+             .WithMessage("Aucun TenantId trouvé.");
     }
 
     [TestMethod]
     public void GetUniqueTenantId_Generic()
     {
-        Check.That(_identityService.GetUniqueTenantId<Guid>()).IsEqualTo(ClaimValueTenantsId.First());
+        var claims = new Dictionary<string, List<string>>
+        {
+            { KrosoftClaimNames.TenantsId, [ClaimValueTenantId1.ToString()] }
+        };
+        using var serviceProvider = CreateServiceCollection(services => { services.AddSingleton(claims); });
+        _identityService = serviceProvider.GetRequiredService<IIdentityService>();
+        Check.That(_identityService.GetUniqueTenantId<Guid>()).IsEqualTo(ClaimValueTenantId1);
     }
 
     [TestMethod]
