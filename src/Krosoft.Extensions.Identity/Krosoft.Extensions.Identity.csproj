@@ -43,7 +43,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="Krosoft.Extensions.Core" Version="2025.11.17.4348" />
-	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Krosoft.Extensions.Identity.Abstractions\Krosoft.Extensions.Identity.Abstractions.csproj" />
