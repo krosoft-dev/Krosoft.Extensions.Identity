@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/Krosoft.Extensions.Identity.Abstractions/Krosoft.Extensions.Identity.Abstractions.csproj" />
+    <Project Path="src/Krosoft.Extensions.Identity/Krosoft.Extensions.Identity.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Krosoft.Extensions.Identity.Tests/Krosoft.Extensions.Identity.Tests.csproj" />
+  </Folder>
+</Solution>
