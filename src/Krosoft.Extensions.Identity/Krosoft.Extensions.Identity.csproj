@@ -44,7 +44,7 @@
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.7" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Krosoft.Extensions.Core" Version="2026.4.16.6624" />
+		<PackageReference Include="Krosoft.Extensions.Core" Version="2026.4.22.6900" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
 	</ItemGroup>
 	<ItemGroup>
