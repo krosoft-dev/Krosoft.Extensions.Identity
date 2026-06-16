@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
+		<PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
 		<PackageReference Include="Krosoft.Extensions.Testing" Version="2026.5.28.7430" />
 	</ItemGroup>
 	<ItemGroup>
