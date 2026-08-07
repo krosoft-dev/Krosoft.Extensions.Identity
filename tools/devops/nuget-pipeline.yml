@@ -15,11 +15,12 @@ trigger:
       - main
   paths:
     include:
-      - "**/Krosoft.Extensions.Identity/*"
+      - src
+      - Directory.Build.props
 
 extends:
   template: tools/devops/templates/pipelines/nuget-template.yml@Krosoft.Extensions
   parameters:
     packages:
-      - "Krosoft.Extensions.Identity"
       - "Krosoft.Extensions.Identity.Abstractions"
+      - "Krosoft.Extensions.Identity"
